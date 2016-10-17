@@ -62,22 +62,30 @@ while True:
 	        data2 = (resp2[0] * 256 + resp2[1]) & 0x3ff
 		redata1 = remap(data1, 0, 1023, 0, 255)
 		redata2 = remap(data2, 0, 1023, 0, 255)
-
 		updatedata1 = olddata1 - redata1
-		if updatedata1 > 5 or updatedata1 < -5:
-			port.write("L" + str(10000 + redata1))
-			olddata1 = redata1
-			print "Send left motor : " + str(redata1)
-			if port.read(3) == "Ack":
-				print "OK"
-
 		updatedata2 = olddata2 - redata2
-		if updatedata2 > 5 or updatedata2 < -5:
-			port.write("R" + str(10000 + redata2))
+
+		if (updatedata1 > 5 or updatedata1 < -5) and (updatedata2 > 5 or updatedata2 < -5):
+			port.write("A" + str(10000 + redata1) + str(10000 + redata2))
+			olddata1 = redata1
 			olddata2 = redata2
-			print "Send right mortor :" + str(redata2)
+			print "Send left and right motor : " + str(redata1) + ", " + str(redata2)
 			if port.read(3) == "Ack":
 				print "OK"
+		else:
+			if updatedata1 > 5 or updatedata1 < -5:
+				port.write("L" + str(10000 + redata1))
+				olddata1 = redata1
+				print "Send left motor : " + str(redata1)
+				if port.read(3) == "Ack":
+					print "OK"
+
+			if updatedata2 > 5 or updatedata2 < -5:
+				port.write("R" + str(10000 + redata2))
+				olddata2 = redata2
+				print "Send right mortor :" + str(redata2)
+				if port.read(3) == "Ack":
+					print "OK"
 
 		time.sleep(0.2)
 	except KeyboardInterrupt:
