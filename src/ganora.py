@@ -4,7 +4,7 @@
     File name: ganora.py
     Author: Jingun Jung
     Date created: 10/06/2016
-    Date last modified: 10/06/2016
+    Date last modified: 10/19/2016
     Python Version: 2.7
 '''
 import time
@@ -65,28 +65,17 @@ while True:
 		updatedata1 = olddata1 - redata1
 		updatedata2 = olddata2 - redata2
 
-		if (updatedata1 > 5 or updatedata1 < -5) and (updatedata2 > 5 or updatedata2 < -5):
-			port.write("A" + str(10000 + redata1) + str(10000 + redata2))
+		if updatedata1 > 5 or updatedata1 < -5:
+			port.write("J" + str(hex(redata1)[2:]).zfill(2))
 			olddata1 = redata1
+			print "Send left motor : " + str(redata1) + ", HEX: " + str(hex(redata1)[2:].zfill(2))
+
+		if updatedata2 > 5 or updatedata2 < -5:
+			port.write("L" + str(hex(redata2)[2:]).zfill(2))
 			olddata2 = redata2
-			print "Send left and right motor : " + str(redata1) + ", " + str(redata2)
-			if port.read(3) == "Ack":
-				print "OK"
-		else:
-			if updatedata1 > 5 or updatedata1 < -5:
-				port.write("L" + str(10000 + redata1))
-				olddata1 = redata1
-				print "Send left motor : " + str(redata1)
-				if port.read(3) == "Ack":
-					print "OK"
+			print "Send right mortor :" + str(redata2) + ", HEX: " + str(hex(redata2)[2:].zfill(2))
 
-			if updatedata2 > 5 or updatedata2 < -5:
-				port.write("R" + str(10000 + redata2))
-				olddata2 = redata2
-				print "Send right mortor :" + str(redata2)
-				if port.read(3) == "Ack":
-					print "OK"
-
+		port.flush()
 		time.sleep(0.2)
 	except KeyboardInterrupt:
 		spi.close()
